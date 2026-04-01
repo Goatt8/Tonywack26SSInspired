@@ -7,6 +7,14 @@
 
 import SwiftUI
 
+struct ScrollOffsetKey: PreferenceKey {
+    static var defaultValue: [Int: CGFloat] = [:]
+    
+    static func reduce(value: inout [Int: CGFloat], nextValue: () -> [Int: CGFloat]) {
+        value.merge(nextValue(), uniquingKeysWith: { $1 })
+    }
+}
+
 struct ProductView: View {
     
     let products: [Product] = [
@@ -39,8 +47,29 @@ struct ProductView: View {
                         Image(products[index].imageName)
                             .resizable()
                             .scaledToFill()
+                            .frame(height: 540)
                             .clipped()
+                            .background(
+                                GeometryReader { geo in
+                                    Color.clear
+                                        .preference(
+                                            key: ScrollOffsetKey.self,
+                                            value: [index: geo.frame(in: .global).midY]
+                                        )
+                                }
+                            )
                     }
+                }
+            }
+            
+            .onPreferenceChange(ScrollOffsetKey.self) { values in
+                
+                let screenCenter = UIScreen.main.bounds.height / 2
+                
+                let closest = values.min(by: { abs($0.value - screenCenter) < abs($1.value - screenCenter) })
+                
+                if let index = closest?.key {
+                    selectedIndex = index
                 }
             }
             
@@ -53,7 +82,7 @@ struct ProductView: View {
                             Text(products[index].name)
                                 .foregroundColor(index == selectedIndex ? .black : .gray)
                                 .font(index == selectedIndex ? .headline : .subheadline)
-                                .scaleEffect(index == selectedIndex ? 1.1 : 0.95)
+                                .scaleEffect(index == selectedIndex ? 1.1 : 0.9)
                                 .opacity(index == selectedIndex ? 1 : 0.8)
                                 .animation(.easeInOut(duration: 0.2), value: selectedIndex)
                                 .onTapGesture {
@@ -63,7 +92,6 @@ struct ProductView: View {
                     }
                 }
                 .padding(.leading, 20)
-                
                 Spacer()
             }
             
@@ -73,13 +101,11 @@ struct ProductView: View {
                     .scaledToFit()
                     .frame(height: 80)
                     .padding(.top, 4)
-                
                 Spacer()
             }
         }
     }
 }
-
 
 #Preview {
     ProductView()
