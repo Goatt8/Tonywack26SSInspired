@@ -22,6 +22,12 @@ struct ProductView: View {
     
     @State private var selectedIndex: Int = 0
     
+    var visibleRange: ClosedRange<Int> {
+        let lower = max(0, selectedIndex - 2)
+        let upper = min(products.count - 1, selectedIndex + 2)
+        return lower...upper
+    }
+    
     var body: some View {
         
         ZStack {
@@ -41,12 +47,19 @@ struct ProductView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 26) {
                     ForEach(products.indices, id: \.self) { index in
-                        Text(products[index].name)
-                            .foregroundColor(index == selectedIndex ? .black : .gray)
-                            .font(.headline)
-                            .onTapGesture {
-                                selectedIndex = index
-                            }
+                        
+                        if visibleRange.contains(index) {
+                            
+                            Text(products[index].name)
+                                .foregroundColor(index == selectedIndex ? .black : .gray)
+                                .font(index == selectedIndex ? .headline : .subheadline)
+                                .scaleEffect(index == selectedIndex ? 1.1 : 0.95)
+                                .opacity(index == selectedIndex ? 1 : 0.8)
+                                .animation(.easeInOut(duration: 0.2), value: selectedIndex)
+                                .onTapGesture {
+                                    selectedIndex = index
+                                }
+                        }
                     }
                 }
                 .padding(.leading, 20)
