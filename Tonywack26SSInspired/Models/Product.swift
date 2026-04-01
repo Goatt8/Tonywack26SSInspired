@@ -15,14 +15,3 @@ struct Product: Identifiable {
     let category: Category
 }
 
-
-enum Category: String, CaseIterable {
-    case outer
-    case top
-    case pants
-    case shoes
-    
-    var title: String {
-        rawValue.capitalized
-    }
-}

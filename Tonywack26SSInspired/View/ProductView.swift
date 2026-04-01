@@ -34,7 +34,7 @@ struct ProductView: View {
     
     var visibleRange: ClosedRange<Int> {
         let lower = max(0, selectedIndex - 2)
-        let upper = min(products.count - 1, selectedIndex + 2)
+        let upper = min(filteredProducts.count - 1, selectedIndex + 2)
         return lower...upper
     }
     
@@ -96,23 +96,57 @@ struct ProductView: View {
                 Spacer()
             }
             
+            if isMenuOpen {
+                ZStack(alignment: .leading) {
+                    Color.black.opacity(0.4)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation {
+                                isMenuOpen = false
+                            }
+                        }
+                    MenuView(
+                        selectedCategory: $selectedCategory,
+                        isMenuOpen: $isMenuOpen
+                    )
+                    .transition(.move(edge: .leading))
+                }
+            }
+            
             VStack {
-                Image("logo")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 80)
-                    .padding(.top, 4)
+                HStack {
+                    Button {
+                        isMenuOpen.toggle()
+                    } label: {
+                        Image(systemName: "line.3.horizontal")
+                            .font(.title2)
+                            .foregroundColor(.black)
+                            .padding()
+                    }
+                    
+                    Spacer()
+                    
+                    Image("logo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 80)
+                    Spacer()
+                    
+                    // 네비게이션 우측 빈 공간
+                    Rectangle()
+                        .foregroundColor(.clear)
+                        .frame(width: 44, height: 44)
+                }
+                .padding(.top, 10)
                 Spacer()
             }
-        
             .fullScreenCover(item: $selectedProduct) { product in
                 ProductDetailView(product: product)
             }
         }
     }
-    
-    
 }
+
 
 #Preview {
     ProductView()
