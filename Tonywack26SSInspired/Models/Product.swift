@@ -12,5 +12,17 @@ struct Product: Identifiable {
     let name: String
     let price: Int
     let imageName: String
-    let category: String
+    let category: Category
+}
+
+
+enum Category: String, CaseIterable {
+    case outer
+    case top
+    case pants
+    case shoes
+    
+    var title: String {
+        rawValue.capitalized
+    }
 }

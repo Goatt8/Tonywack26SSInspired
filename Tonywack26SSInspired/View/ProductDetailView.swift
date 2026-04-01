@@ -15,14 +15,13 @@ struct ProductDetailView: View {
     
     var body: some View {
         ScrollView {
+            
             VStack(alignment: .leading, spacing: 20) {
-                
                 Button {
                     dismiss()
                 } label: {
                     Image(systemName: "xmark")
                         .font(.title2)
-                    
                 }
                 
                 Image(product.imageName)
@@ -52,7 +51,7 @@ struct ProductDetailView: View {
             name: "Look_01",
             price: 89000,
             imageName: "look_01",
-            category: "outer"
+            category: .outer
         )
     )
 }
