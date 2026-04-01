@@ -109,14 +109,15 @@ struct ProductView: View {
                         selectedCategory: $selectedCategory,
                         isMenuOpen: $isMenuOpen
                     )
-                    .transition(.move(edge: .leading))
                 }
             }
             
             VStack {
                 HStack {
                     Button {
-                        isMenuOpen.toggle()
+                        withAnimation {
+                            isMenuOpen.toggle()
+                        }
                     } label: {
                         Image(systemName: "line.3.horizontal")
                             .font(.title2)
@@ -144,6 +145,7 @@ struct ProductView: View {
                 ProductDetailView(product: product)
             }
         }
+        .animation(.easeInOut, value: isMenuOpen)
     }
 }
 
