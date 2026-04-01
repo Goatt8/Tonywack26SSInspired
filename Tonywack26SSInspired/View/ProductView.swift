@@ -7,14 +7,6 @@
 
 import SwiftUI
 
-struct ScrollOffsetKey: PreferenceKey {
-    static var defaultValue: [Int: CGFloat] = [:]
-    
-    static func reduce(value: inout [Int: CGFloat], nextValue: () -> [Int: CGFloat]) {
-        value.merge(nextValue(), uniquingKeysWith: { $1 })
-    }
-}
-
 struct ProductView: View {
     
     let products: [Product] = [
@@ -30,6 +22,8 @@ struct ProductView: View {
     
     @State private var selectedIndex: Int = 0
     
+    @State private var selectedProduct: Product? = nil
+    
     var visibleRange: ClosedRange<Int> {
         let lower = max(0, selectedIndex - 2)
         let upper = min(products.count - 1, selectedIndex + 2)
@@ -37,7 +31,6 @@ struct ProductView: View {
     }
     
     var body: some View {
-        
         ZStack {
             Color.black.ignoresSafeArea()
             
@@ -49,11 +42,14 @@ struct ProductView: View {
                             .scaledToFill()
                             .frame(height: 540)
                             .clipped()
+                            .onTapGesture {
+                                selectedProduct = products[index]
+                            }
                             .background(
                                 GeometryReader { geo in
                                     Color.clear
                                         .preference(
-                                            key: ScrollOffsetKey.self,
+                                            key: ScrollPositionPreferenceKey.self,
                                             value: [index: geo.frame(in: .global).midY]
                                         )
                                 }
@@ -61,11 +57,9 @@ struct ProductView: View {
                     }
                 }
             }
-            
-            .onPreferenceChange(ScrollOffsetKey.self) { values in
+            .onPreferenceChange(ScrollPositionPreferenceKey.self) { values in
                 
                 let screenCenter = UIScreen.main.bounds.height / 2
-                
                 let closest = values.min(by: { abs($0.value - screenCenter) < abs($1.value - screenCenter) })
                 
                 if let index = closest?.key {
@@ -78,7 +72,6 @@ struct ProductView: View {
                     ForEach(products.indices, id: \.self) { index in
                         
                         if visibleRange.contains(index) {
-                            
                             Text(products[index].name)
                                 .foregroundColor(index == selectedIndex ? .black : .gray)
                                 .font(index == selectedIndex ? .headline : .subheadline)
@@ -103,8 +96,14 @@ struct ProductView: View {
                     .padding(.top, 4)
                 Spacer()
             }
+        
+            .fullScreenCover(item: $selectedProduct) { product in
+                ProductDetailView(product: product)
+            }
         }
     }
+    
+    
 }
 
 #Preview {

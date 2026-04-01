@@ -5,7 +5,7 @@
 //  Created by goat on 4/1/26.
 //
 
-import Foundation
+import SwiftUI
 
 //struct HomeView: View {
 //    
