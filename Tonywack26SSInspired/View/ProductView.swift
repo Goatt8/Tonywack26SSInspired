@@ -9,17 +9,6 @@ import SwiftUI
 
 struct ProductView: View {
     
-    let products: [Product] = [
-        Product(id: "1", name: "Look_01", price: 89000, imageName: "look_01", category: .outer),
-        Product(id: "2", name: "Look_02", price: 79000, imageName: "look_02", category: .outer),
-        Product(id: "3", name: ":Look_03", price: 69000, imageName: "look_03", category: .outer),
-        Product(id: "4", name: "Look_04", price: 79000, imageName: "look_04", category: .outer),
-        Product(id: "5", name: "Look_05", price: 79000, imageName: "look_05", category: .outer),
-        Product(id: "6", name: "Look_06", price: 79000, imageName: "look_06", category: .outer),
-        Product(id: "7", name: "Look_07", price: 79000, imageName: "look_07", category: .outer),
-        Product(id: "8", name: "Look_08", price: 79000, imageName: "look_08", category: .outer)
-    ]
-    
     @State private var selectedIndex: Int = 0
     
     @State private var selectedProduct: Product? = nil
@@ -28,14 +17,21 @@ struct ProductView: View {
     
     @State private var isMenuOpen: Bool = false
     
+    var products: [Product] {
+        Product.testData
+    }
+    
     var filteredProducts: [Product] {
         products.filter { $0.category == selectedCategory }
     }
     
     var visibleRange: ClosedRange<Int> {
+        guard !filteredProducts.isEmpty else { return 0...0 }
+        
         let lower = max(0, selectedIndex - 2)
         let upper = min(filteredProducts.count - 1, selectedIndex + 2)
-        return lower...upper
+        
+        return lower <= upper ? lower...upper : lower...lower
     }
     
     var body: some View {
@@ -96,6 +92,7 @@ struct ProductView: View {
                 Spacer()
             }
             
+            //MenuView
             ZStack(alignment: .leading) {
                    Color.black.opacity(isMenuOpen ? 0.4 : 0)
                        .ignoresSafeArea()
@@ -111,7 +108,11 @@ struct ProductView: View {
                    )
                    .frame(width: 300)
                    .offset(x: isMenuOpen ? 0 : -300)
+                
                }
+            .onChange(of: selectedCategory) {
+                selectedIndex = 0
+            }
         
             VStack {
                 HStack {
@@ -149,7 +150,6 @@ struct ProductView: View {
         .animation(.easeInOut, value: isMenuOpen)
     }
 }
-
 
 #Preview {
     ProductView()
