@@ -96,22 +96,23 @@ struct ProductView: View {
                 Spacer()
             }
             
-            if isMenuOpen {
-                ZStack(alignment: .leading) {
-                    Color.black.opacity(0.4)
-                        .ignoresSafeArea()
-                        .onTapGesture {
-                            withAnimation {
-                                isMenuOpen = false
-                            }
-                        }
-                    MenuView(
-                        selectedCategory: $selectedCategory,
-                        isMenuOpen: $isMenuOpen
-                    )
-                }
-            }
-            
+            ZStack(alignment: .leading) {
+                   Color.black.opacity(isMenuOpen ? 0.4 : 0)
+                       .ignoresSafeArea()
+                       .onTapGesture {
+                           withAnimation {
+                               isMenuOpen = false
+                           }
+                       }
+                   
+                   MenuView(
+                       selectedCategory: $selectedCategory,
+                       isMenuOpen: $isMenuOpen
+                   )
+                   .frame(width: 300)
+                   .offset(x: isMenuOpen ? 0 : -300)
+               }
+        
             VStack {
                 HStack {
                     Button {
