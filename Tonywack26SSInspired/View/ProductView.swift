@@ -46,6 +46,9 @@ struct ProductView: View {
                             .scaledToFill()
                             .frame(height: 540)
                             .clipped()
+                            .blur(radius: index == selectedIndex ? 0 : 1.5)
+                            .opacity(index == selectedIndex ? 1 : 0.9)
+                            .animation(.easeInOut(duration: 0.3), value: selectedIndex)
                             .onTapGesture {
                                 selectedProduct = filteredProducts[index]
                             }
@@ -61,6 +64,7 @@ struct ProductView: View {
                     }
                 }
             }
+            
             .onPreferenceChange(ScrollPositionPreferenceKey.self) { values in
                 
                 let screenCenter = UIScreen.main.bounds.height / 2
@@ -94,26 +98,26 @@ struct ProductView: View {
             
             //MenuView
             ZStack(alignment: .leading) {
-                   Color.black.opacity(isMenuOpen ? 0.4 : 0)
-                       .ignoresSafeArea()
-                       .onTapGesture {
-                           withAnimation {
-                               isMenuOpen = false
-                           }
-                       }
-                   
-                   MenuView(
-                       selectedCategory: $selectedCategory,
-                       isMenuOpen: $isMenuOpen
-                   )
-                   .frame(width: 300)
-                   .offset(x: isMenuOpen ? 0 : -300)
+                Color.black.opacity(isMenuOpen ? 0.4 : 0)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        withAnimation {
+                            isMenuOpen = false
+                        }
+                    }
                 
-               }
+                MenuView(
+                    selectedCategory: $selectedCategory,
+                    isMenuOpen: $isMenuOpen
+                )
+                .frame(width: 300)
+                .offset(x: isMenuOpen ? 0 : -300)
+                
+            }
             .onChange(of: selectedCategory) {
                 selectedIndex = 0
             }
-        
+            
             VStack {
                 HStack {
                     Button {
