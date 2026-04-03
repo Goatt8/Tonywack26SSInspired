@@ -46,7 +46,7 @@ struct ProductView: View {
                             .scaledToFill()
                             .frame(height: 540)
                             .clipped()
-                            .blur(radius: index == selectedIndex ? 0 : 1.5)
+                            .blur(radius: index == selectedIndex ? 0 : 1.7)
                             .opacity(index == selectedIndex ? 1 : 0.9)
                             .animation(.easeInOut(duration: 0.3), value: selectedIndex)
                             .onTapGesture {
@@ -84,7 +84,7 @@ struct ProductView: View {
                                 .foregroundColor(index == selectedIndex ? .black : .gray)
                                 .font(index == selectedIndex ? .headline : .subheadline)
                                 .scaleEffect(index == selectedIndex ? 1.1 : 0.9)
-                                .opacity(index == selectedIndex ? 1 : 0.8)
+                                .opacity(index == selectedIndex ? 1 : 0.7)
                                 .animation(.easeInOut(duration: 0.2), value: selectedIndex)
                                 .onTapGesture {
                                     selectedIndex = index

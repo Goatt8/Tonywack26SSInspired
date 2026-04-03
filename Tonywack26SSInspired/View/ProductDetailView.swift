@@ -14,43 +14,80 @@ struct ProductDetailView: View {
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        ScrollView {
+        ZStack {
+            Image(product.imageName)
+                .resizable()
+                .scaledToFill()
+                .frame(
+                    width: UIScreen.main.bounds.width,
+                    height: UIScreen.main.bounds.height
+                )
+                .blur(radius: 10)
+                .clipped()
+                .ignoresSafeArea()
             
-            VStack(alignment: .leading, spacing: 20) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "xmark")
-                        .font(.title2)
+            Color.black.opacity(0.2)
+                .ignoresSafeArea()
+            
+            VStack(spacing: 10) {
+                HStack{
+                    Button {
+                        dismiss()
+                    }label: {
+                        Image(systemName: "xmark")
+                            .font(.title2)
+                            .foregroundColor(.white)
+                    }
+                    
+                    Spacer()
+                    
+                    Image("logo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 80)
+                    
+                    Spacer()
+                    // 네비게이션 우측 빈 공간
+                    Rectangle()
+                        .foregroundColor(.clear)
+                        .frame(width: 44, height: 44)
                 }
+                .padding(.top, -60)
+                .padding(.horizontal, 14)
                 
                 Image(product.imageName)
                     .resizable()
                     .scaledToFit()
+                    .frame(height: UIScreen.main.bounds.height * 0.65)
+                    .clipped()
                 
-                Text(product.name)
-                    .font(.title)
-                    .bold()
+                VStack(spacing: 8) {
+                    
+                    Text(product.name)
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .multilineTextAlignment(.center)
+                    
+                    Text("\(product.price) 원")
+                        .font(.headline)
+                        .foregroundColor(.white.opacity(0.8))
+                }
                 
-                Text("\(product.price)원")
-                    .font(.headline)
-                
-                Text("이 상품은 룩북 기반의 스타일 아이템입니다.")
-                    .font(.body)
-                    .foregroundColor(.gray)
             }
-            .padding()
+            .ignoresSafeArea(edges: .top)
         }
     }
 }
+
 
 #Preview {
     ProductDetailView(
         product: Product(
             id: "1",
-            name: "Look_01",
+            name: "VELVET ZIPPERED BLOUSON JACKET_ DARK BROWN",
             price: 89000,
-            imageName: "look_01",
+            imageName: "outer_01",
             category: .outer
         )
     )
