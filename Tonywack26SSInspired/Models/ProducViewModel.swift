@@ -18,7 +18,7 @@ class ProductViewModel: ObservableObject {
         db.collection("products").getDocuments { snapshot, error in
             
             if let error = error {
-                print("❌ Firestore 에러:", error)
+                print("fetchProducts 에러:", error)
                 return
             }
             
@@ -29,4 +29,5 @@ class ProductViewModel: ObservableObject {
             }
         }
     }
+    
 }

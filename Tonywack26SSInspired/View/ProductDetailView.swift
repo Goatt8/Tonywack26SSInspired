@@ -7,33 +7,41 @@
 
 import SwiftUI
 
+
 struct ProductDetailView: View {
     
     let product: Product
-    
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
         ZStack {
-            Image(product.name)
-                .resizable()
-                .scaledToFill()
-                .frame(
-                    width: UIScreen.main.bounds.width,
-                    height: UIScreen.main.bounds.height
-                )
-                .blur(radius: 10)
-                .clipped()
-                .ignoresSafeArea()
             
-            Color.black.opacity(0.2)
-                .ignoresSafeArea()
+            Color.black.opacity(0.6).ignoresSafeArea()
             
-            VStack(spacing: 10) {
-                HStack{
+            // 탭뷰 이미지
+            TabView {
+                ForEach(product.imageUrls, id: \.self) { url in
+                    AsyncImage(url: URL(string: url)) { image in
+                        image
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: UIScreen.main.bounds.height * 0.7)
+                            .clipped()
+                    } placeholder: {
+                        Color.black
+                    }
+                }
+            }
+            .frame(height: UIScreen.main.bounds.height * 0.7)
+            .tabViewStyle(.page)
+            .offset(y: -10)
+            
+            // 상단 UI
+            VStack {
+                HStack {
                     Button {
                         dismiss()
-                    }label: {
+                    } label: {
                         Image(systemName: "xmark")
                             .font(.title2)
                             .foregroundColor(.white)
@@ -47,34 +55,28 @@ struct ProductDetailView: View {
                         .frame(height: 80)
                     
                     Spacer()
-                    // 네비게이션 우측 빈 공간
+                    
                     Rectangle()
                         .foregroundColor(.clear)
                         .frame(width: 44, height: 44)
                 }
-                .padding(.top, -60)
+                .padding(.top, 50)
                 .padding(.horizontal, 14)
                 
-                Image(product.name)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: UIScreen.main.bounds.height * 0.65)
-                    .clipped()
+                Spacer()
                 
-                VStack(spacing: 8) {
-                    
+                // 하단 UI
+                VStack(spacing: 6) {
                     Text(product.name)
                         .font(.headline)
-                        .fontWeight(.bold)
                         .foregroundColor(.white)
-                        .lineLimit(2)
                         .multilineTextAlignment(.center)
                     
                     Text("\(product.price) 원")
-                        .font(.headline)
                         .foregroundColor(.white.opacity(0.8))
                 }
-                
+                .padding(.vertical, 20)
+                .frame(maxWidth: .infinity)
             }
             .ignoresSafeArea(edges: .top)
         }
@@ -89,7 +91,7 @@ struct ProductDetailView: View {
             name: "VELVET ZIPPERED BLOUSON JACKET_ DARK BROWN",
             price: 89000,
             category: .outer,
-            imageUrls: []
+            imageUrls: ["https://firebasestorage.googleapis.com/v0/b/tonywack26ssinspired.firebasestorage.app/o/outer_1%2Fouter_01_01.jpg?alt=media&token=63981c22-3769-460d-bbf4-24aa901d387a","https://firebasestorage.googleapis.com/v0/b/tonywack26ssinspired.firebasestorage.app/o/outer_1%2Fouter_01_02.jpg?alt=media&token=b38ada73-4384-43c3-ae59-86599d89a79e"]
         )
     )
 }
