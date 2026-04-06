@@ -7,6 +7,13 @@
 
 import SwiftUI
 
-//struct HomeView: View {
-//    
-//}
+struct HomeView: View {
+    var body: some View {
+        
+    }
+    
+}
+
+#Preview {
+    HomeView()
+}

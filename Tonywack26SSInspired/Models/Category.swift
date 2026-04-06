@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Category: String, CaseIterable {
+enum Category: String, Codable, CaseIterable {
     case outer
     case knit
     case top

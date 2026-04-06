@@ -67,6 +67,7 @@ struct ProductDetailView: View {
                         .font(.headline)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
+                        .lineLimit(2)
                         .multilineTextAlignment(.center)
                     
                     Text("\(product.price) 원")
