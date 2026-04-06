@@ -15,7 +15,7 @@ struct ProductDetailView: View {
     
     var body: some View {
         ZStack {
-            Image(product.imageName)
+            Image(product.name)
                 .resizable()
                 .scaledToFill()
                 .frame(
@@ -55,7 +55,7 @@ struct ProductDetailView: View {
                 .padding(.top, -60)
                 .padding(.horizontal, 14)
                 
-                Image(product.imageName)
+                Image(product.name)
                     .resizable()
                     .scaledToFit()
                     .frame(height: UIScreen.main.bounds.height * 0.65)
@@ -88,8 +88,8 @@ struct ProductDetailView: View {
             id: "1",
             name: "VELVET ZIPPERED BLOUSON JACKET_ DARK BROWN",
             price: 89000,
-            imageName: "outer_01",
-            category: .outer
+            category: .outer,
+            imageUrls: []
         )
     )
 }

@@ -15,7 +15,6 @@ struct Tonywack26SSInspiredApp: App {
             FirebaseApp.configure()
         }
     
-    
     var body: some Scene {
         WindowGroup {
             ProductView()

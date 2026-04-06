@@ -18,8 +18,10 @@ struct ProductView: View {
     
     @State private var isMenuOpen: Bool = false
     
+    @StateObject private var viewModel = ProductViewModel()
+    
     var products: [Product] {
-        Product.testData
+        viewModel.products
     }
     
     var filteredProducts: [Product] {
@@ -35,33 +37,40 @@ struct ProductView: View {
         return lower <= upper ? lower...upper : lower...lower
     }
     
+    
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
             
             ScrollView {
                 VStack(spacing: 0) {
-                    ForEach(filteredProducts.indices, id: \.self) { index in
-                        Image(filteredProducts[index].imageName)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(height: 540)
-                            .clipped()
-                            .blur(radius: index == selectedIndex ? 0 : 1.7)
-                            .opacity(index == selectedIndex ? 1 : 0.9)
-                            .animation(.easeInOut(duration: 0.3), value: selectedIndex)
-                            .onTapGesture {
-                                selectedProduct = filteredProducts[index]
+                    ForEach(Array(filteredProducts.enumerated()), id: \.element.id) { index, product in
+                        
+                        let imageUrl = product.imageUrls.first ?? ""
+                        
+                        AsyncImage(url: URL(string: imageUrl)) { image in
+                            image
+                                .resizable()
+                                .scaledToFill()
+                        } placeholder: {
+                            ProgressView()
+                        }
+                        .frame(height: 540)
+                        .clipped()
+                        .blur(radius: index == selectedIndex ? 0 : 1.7)
+                        .opacity(index == selectedIndex ? 1 : 0.9)
+                        .animation(.easeInOut(duration: 0.3), value: selectedIndex)
+                        .onTapGesture {
+                            selectedProduct = product
+                        }
+                        .background(
+                            GeometryReader { geo in
+                                Color.clear.preference(
+                                    key: ScrollPositionPreferenceKey.self,
+                                    value: [index: geo.frame(in: .global).midY]
+                                )
                             }
-                            .background(
-                                GeometryReader { geo in
-                                    Color.clear
-                                        .preference(
-                                            key: ScrollPositionPreferenceKey.self,
-                                            value: [index: geo.frame(in: .global).midY]
-                                        )
-                                }
-                            )
+                        )
                     }
                 }
             }
@@ -81,7 +90,7 @@ struct ProductView: View {
                     ForEach(filteredProducts.indices, id: \.self) { index in
                         
                         if visibleRange.contains(index) {
-                            Text(filteredProducts[index].name)
+                            Text(filteredProducts[index].id)
                                 .foregroundColor(index == selectedIndex ? .black : .gray)
                                 .font(index == selectedIndex ? .headline : .subheadline)
                                 .scaleEffect(index == selectedIndex ? 1.1 : 0.9)
@@ -153,7 +162,11 @@ struct ProductView: View {
             }
         }
         .animation(.easeInOut, value: isMenuOpen)
+        .onAppear {
+            viewModel.fetchProducts()
+        }
     }
+    
 }
 
 #Preview {
