@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 
 struct ProductView: View {
@@ -48,29 +49,31 @@ struct ProductView: View {
                         
                         let imageUrl = product.imageUrls.first ?? ""
                         
-                        AsyncImage(url: URL(string: imageUrl)) { image in
-                            image
-                                .resizable()
-                                .scaledToFill()
-                        } placeholder: {
-                            ProgressView()
-                        }
-                        .frame(height: 540)
-                        .clipped()
-                        .blur(radius: index == selectedIndex ? 0 : 1.7)
-                        .opacity(index == selectedIndex ? 1 : 0.9)
-                        .animation(.easeInOut(duration: 0.3), value: selectedIndex)
-                        .onTapGesture {
-                            selectedProduct = product
-                        }
-                        .background(
-                            GeometryReader { geo in
-                                Color.clear.preference(
-                                    key: ScrollPositionPreferenceKey.self,
-                                    value: [index: geo.frame(in: .global).midY]
-                                )
+                        KFImage(URL(string: imageUrl))
+                            .placeholder {
+                                ProgressView()
                             }
-                        )
+                            .retry(maxCount: 2, interval: .seconds(2))
+                            .cacheMemoryOnly(false)
+                            .fade(duration: 0.25)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(height: 540)
+                            .clipped()
+                            .blur(radius: index == selectedIndex ? 0 : 1.7)
+                            .opacity(index == selectedIndex ? 1 : 0.9)
+                            .animation(.easeInOut(duration: 0.3), value: selectedIndex)
+                            .onTapGesture {
+                                selectedProduct = product
+                            }
+                            .background(
+                                GeometryReader { geo in
+                                    Color.clear.preference(
+                                        key: ScrollPositionPreferenceKey.self,
+                                        value: [index: geo.frame(in: .global).midY]
+                                    )
+                                }
+                            )
                     }
                 }
             }

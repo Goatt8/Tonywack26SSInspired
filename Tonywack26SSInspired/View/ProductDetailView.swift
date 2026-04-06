@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 
 struct ProductDetailView: View {
@@ -15,26 +16,23 @@ struct ProductDetailView: View {
     
     var body: some View {
         ZStack {
-            
-            Color.black.opacity(0.6).ignoresSafeArea()
-            
-            // 탭뷰 이미지
             TabView {
                 ForEach(product.imageUrls, id: \.self) { url in
-                    AsyncImage(url: URL(string: url)) { image in
-                        image
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: UIScreen.main.bounds.height * 0.7)
-                            .clipped()
-                    } placeholder: {
-                        Color.black
-                    }
+                    KFImage(URL(string: url))
+                        .placeholder { ProgressView() }
+                        .retry(maxCount: 2, interval: .seconds(2))
+                        .cacheMemoryOnly(false)
+                        .fade(duration: 0.25)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: UIScreen.main.bounds.height * 0.7)
+                        .clipped()
                 }
             }
             .frame(height: UIScreen.main.bounds.height * 0.7)
             .tabViewStyle(.page)
-            .offset(y: -10)
+            .offset(y: -20)
+        
             
             // 상단 UI
             VStack {
@@ -44,7 +42,7 @@ struct ProductDetailView: View {
                     } label: {
                         Image(systemName: "xmark")
                             .font(.title2)
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                     }
                     
                     Spacer()
@@ -69,11 +67,12 @@ struct ProductDetailView: View {
                 VStack(spacing: 6) {
                     Text(product.name)
                         .font(.headline)
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                         .multilineTextAlignment(.center)
                     
                     Text("\(product.price) 원")
-                        .foregroundColor(.white.opacity(0.8))
+                        .foregroundColor(.gray)
+                        
                 }
                 .padding(.vertical, 20)
                 .frame(maxWidth: .infinity)
@@ -81,8 +80,8 @@ struct ProductDetailView: View {
             .ignoresSafeArea(edges: .top)
         }
     }
-}
 
+}
 
 #Preview {
     ProductDetailView(
