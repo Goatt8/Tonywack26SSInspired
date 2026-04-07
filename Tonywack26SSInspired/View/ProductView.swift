@@ -15,25 +15,15 @@ struct ProductView: View {
     
     @State private var selectedProduct: Product? = nil
     
-    @State private var selectedCategory: Category = .outer
-    
     @State private var isMenuOpen: Bool = false
     
     @StateObject private var viewModel = ProductViewModel()
     
-    var products: [Product] {
-        viewModel.products
-    }
-    
-    var filteredProducts: [Product] {
-        products.filter { $0.category == selectedCategory }
-    }
-    
     var visibleRange: ClosedRange<Int> {
-        guard !filteredProducts.isEmpty else { return 0...0 }
+        guard !viewModel.filteredProducts.isEmpty else { return 0...0 }
         
         let lower = max(0, selectedIndex - 2)
-        let upper = min(filteredProducts.count - 1, selectedIndex + 2)
+        let upper = min(viewModel.filteredProducts.count - 1, selectedIndex + 2)
         
         return lower <= upper ? lower...upper : lower...lower
     }
@@ -45,7 +35,7 @@ struct ProductView: View {
             
             ScrollView {
                 VStack(spacing: 0) {
-                    ForEach(Array(filteredProducts.enumerated()), id: \.element.id) { index, product in
+                    ForEach(Array(viewModel.filteredProducts.enumerated()), id: \.element.id) { index, product in
                         
                         let imageUrl = product.imageUrls.first ?? ""
                         
@@ -90,10 +80,10 @@ struct ProductView: View {
             
             HStack {
                 VStack(alignment: .leading, spacing: 26) {
-                    ForEach(filteredProducts.indices, id: \.self) { index in
+                    ForEach(viewModel.filteredProducts.indices, id: \.self) { index in
                         
                         if visibleRange.contains(index) {
-                            Text(filteredProducts[index].id)
+                            Text(viewModel.filteredProducts[index].id)
                                 .foregroundColor(index == selectedIndex ? .black : .gray)
                                 .font(index == selectedIndex ? .headline : .subheadline)
                                 .scaleEffect(index == selectedIndex ? 1.1 : 0.9)
@@ -120,14 +110,15 @@ struct ProductView: View {
                     }
                 
                 MenuView(
-                    selectedCategory: $selectedCategory,
+                    selectedCategory: $viewModel.selectedCategory,
                     isMenuOpen: $isMenuOpen
                 )
                 .frame(width: 300)
                 .offset(x: isMenuOpen ? 0 : -300)
                 
             }
-            .onChange(of: selectedCategory) {
+            .onChange(of: viewModel.selectedCategory) {
+                viewModel.applyFilters()
                 selectedIndex = 0
             }
             
