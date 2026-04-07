@@ -11,29 +11,45 @@ import Kingfisher
 
 struct ProductDetailView: View {
     
+    @State private var currentIndex = 0
+    
     let product: Product
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
         ZStack {
-            TabView {
-                ForEach(product.imageUrls, id: \.self) { url in
+            TabView(selection: $currentIndex) {
+                ForEach(Array(product.imageUrls.enumerated()), id: \.offset) { index, url in
                     KFImage(URL(string: url))
                         .placeholder { ProgressView() }
                         .retry(maxCount: 2, interval: .seconds(2))
                         .cacheMemoryOnly(false)
                         .fade(duration: 0.25)
                         .resizable()
-                        .scaledToFit()
-                        .frame(height: UIScreen.main.bounds.height * 0.7)
+                        .scaledToFill()
+                        .frame(height: UIScreen.main.bounds.height * 0.65)
                         .clipped()
+                        .tag(index)
                 }
             }
-            .frame(height: UIScreen.main.bounds.height * 0.7)
-            .tabViewStyle(.page)
-            .offset(y: -20)
-        
-            
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .frame(height: UIScreen.main.bounds.height * 0.65)
+            .offset(y: -30)
+            .overlay(
+                // custom Indicator
+                VStack {
+                       Spacer()
+                       HStack(spacing: 6) {
+                           ForEach(0..<product.imageUrls.count, id: \.self) { index in
+                               Circle()
+                                   .fill(index == currentIndex ? Color.black : Color.gray.opacity(0.4))
+                                   .frame(width: 6, height: 6)
+                           }
+                       }
+                       .padding(.bottom, 0)
+                   }
+            )
+           
             // 상단 UI
             VStack {
                 HStack {
@@ -70,9 +86,9 @@ struct ProductDetailView: View {
                         .foregroundColor(.black)
                         .multilineTextAlignment(.center)
                     
-                    Text("\(product.price) 원")
+                    Text("\(product.price) KRW")
                         .foregroundColor(.gray)
-                        
+                    
                 }
                 .padding(.vertical, 20)
                 .frame(maxWidth: .infinity)
@@ -80,7 +96,7 @@ struct ProductDetailView: View {
             .ignoresSafeArea(edges: .top)
         }
     }
-
+    
 }
 
 #Preview {
