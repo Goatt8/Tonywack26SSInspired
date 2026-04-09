@@ -14,13 +14,20 @@ class ProductViewModel: ObservableObject {
     @Published var filteredProducts: [Product] = []
 
     @Published var selectedCategory: Category = .outer {
-        didSet {
-            self.applyFilters()
-        }
+        didSet { applyFilters() }
     }
-    @Published var searchText: String = ""
-    @Published var minPrice: Double = 0
-    @Published var maxPrice: Double = 1000000
+
+    @Published var searchText: String = "" {
+        didSet { applyFilters() }
+    }
+
+    @Published var minPrice: Double = 0 {
+        didSet { applyFilters() }
+    }
+
+    @Published var maxPrice: Double = 1000000 {
+        didSet { applyFilters() }
+    }
     
     private let db = Firestore.firestore()
     

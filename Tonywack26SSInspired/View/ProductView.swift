@@ -16,6 +16,7 @@ struct ProductView: View {
     @State private var selectedProduct: Product? = nil
     
     @State private var isMenuOpen: Bool = false
+    @State private var isSearchOpen: Bool = false
     
     @StateObject private var viewModel = ProductViewModel()
     
@@ -118,12 +119,31 @@ struct ProductView: View {
                 
             }
             .onChange(of: viewModel.selectedCategory) {
-                viewModel.applyFilters()
                 selectedIndex = 0
+            }
+            
+            ZStack(alignment: .trailing) {
+                Color.black.opacity(isSearchOpen ? 0.4 : 0)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        withAnimation {
+                            isSearchOpen = false
+                        }
+                    }
+
+                SearchView(
+                    searchText: $viewModel.searchText,
+                    minPrice: $viewModel.minPrice,
+                    maxPrice: $viewModel.maxPrice,
+                    isOpen: $isSearchOpen
+                )
+                .frame(width: 300)
+                .offset(x: isSearchOpen ? 0 : 300)
             }
             
             VStack {
                 HStack {
+                    // 메뉴버튼
                     Button {
                         withAnimation {
                             isMenuOpen.toggle()
@@ -142,11 +162,17 @@ struct ProductView: View {
                         .scaledToFit()
                         .frame(height: 80)
                     Spacer()
-                    
-                    // 네비게이션 우측 빈 공간
-                    Rectangle()
-                        .foregroundColor(.clear)
-                        .frame(width: 44, height: 44)
+                    // 검색버튼
+                    Button {
+                        withAnimation {
+                            isSearchOpen.toggle()
+                        }
+                    } label: {
+                        Image(systemName: "magnifyingglass")
+                            .font(.title2)
+                            .foregroundColor(.black)
+                            .padding()
+                    }
                 }
                 .padding(.top, 10)
                 Spacer()
