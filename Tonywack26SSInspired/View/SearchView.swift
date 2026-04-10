@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SearchView: View {
+    
     @Binding var searchText: String
     @Binding var minPrice: Double
     @Binding var maxPrice: Double

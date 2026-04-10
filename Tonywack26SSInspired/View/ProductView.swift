@@ -10,6 +10,7 @@ import Kingfisher
 
 
 struct ProductView: View {
+    
     @ObservedObject var viewModel: ProductViewModel
     
     @State private var selectedIndex: Int = 0
@@ -17,6 +18,7 @@ struct ProductView: View {
     @State private var selectedProduct: Product? = nil
     
     @State private var isMenuOpen: Bool = false
+    
     @State private var isSearchOpen: Bool = false
     
     var visibleRange: ClosedRange<Int> {

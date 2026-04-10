@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct RootView: View {
+    
     @StateObject var viewModel = ProductViewModel()
+    
     @State private var isLoading = true
     
     var body: some View {
