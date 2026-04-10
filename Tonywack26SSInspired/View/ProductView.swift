@@ -11,14 +11,14 @@ import Kingfisher
 
 struct ProductView: View {
     @ObservedObject var viewModel: ProductViewModel
-
+    
     @State private var selectedIndex: Int = 0
     
     @State private var selectedProduct: Product? = nil
     
     @State private var isMenuOpen: Bool = false
     @State private var isSearchOpen: Bool = false
-
+    
     var visibleRange: ClosedRange<Int> {
         guard !viewModel.filteredProducts.isEmpty else { return 0...0 }
         
@@ -118,7 +118,7 @@ struct ProductView: View {
                 
             }
             .onChange(of: viewModel.selectedCategory) {
-
+                
                 selectedIndex = 0
             }
             
@@ -130,7 +130,7 @@ struct ProductView: View {
                             isSearchOpen = false
                         }
                     }
-
+                
                 SearchView(
                     searchText: $viewModel.searchText,
                     minPrice: $viewModel.minPrice,
