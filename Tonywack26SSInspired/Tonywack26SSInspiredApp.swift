@@ -17,7 +17,7 @@ struct Tonywack26SSInspiredApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ProductView()
+            RootView()
         }
     }
 }

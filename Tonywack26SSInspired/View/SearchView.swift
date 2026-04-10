@@ -42,8 +42,4 @@ struct SearchView: View {
     }
 }
 
-#Preview {
-   ProductView()
-}
-
 

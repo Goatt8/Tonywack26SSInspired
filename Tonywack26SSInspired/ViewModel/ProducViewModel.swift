@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseFirestore
 
+@MainActor
 class ProductViewModel: ObservableObject {
     
     @Published var products: [Product] = []
@@ -31,29 +32,23 @@ class ProductViewModel: ObservableObject {
     
     private let db = Firestore.firestore()
     
-    func fetchProducts() {
-        db.collection("products").getDocuments { snapshot, error in
-            
-            if let error = error {
-                print("fetchProducts 에러:", error)
-                return
-            }
-            
-            guard let documents = snapshot?.documents else { return }
-            
-            self.products = documents.compactMap { doc in
-                try? doc.data(as: Product.self)
-            }
-            
-            self.applyFilters()
-        }
-    }
+    func fetchProductsData() async {
+           do {
+               let snapshot = try await db.collection("products").getDocuments()
+               
+               self.products = snapshot.documents.compactMap {
+                   try? $0.data(as: Product.self)
+               }
+               
+               self.applyFilters()
+               
+           } catch {
+               print("fetchProductsData 에러")
+           }
+       }
     
     func applyFilters() {
         var result = products
-        
-        print("현재 선택:", selectedCategory)
-        print("전체 카테고리:", products.map { $0.category })
   
         result = result.filter { $0.category == selectedCategory }
         
@@ -67,8 +62,6 @@ class ProductViewModel: ObservableObject {
             $0.price >= Int(minPrice) && $0.price <= Int(maxPrice)
         }
         filteredProducts = result
-        print("\(self.selectedCategory)")
-        print("\(self.filteredProducts)")
     }
     
 }
