@@ -24,6 +24,7 @@ struct ProductDetailView: View {
                         .placeholder { ProgressView() }
                         .retry(maxCount: 2, interval: .seconds(2))
                         .cacheMemoryOnly(false)
+                        .cacheOriginalImage()
                         .fade(duration: 0.25)
                         .resizable()
                         .scaledToFill()
