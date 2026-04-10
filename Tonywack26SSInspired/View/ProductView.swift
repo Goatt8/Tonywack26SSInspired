@@ -119,6 +119,7 @@ struct ProductView: View {
                 
             }
             .onChange(of: viewModel.selectedCategory) {
+
                 selectedIndex = 0
             }
             

@@ -44,12 +44,16 @@ class ProductViewModel: ObservableObject {
             self.products = documents.compactMap { doc in
                 try? doc.data(as: Product.self)
             }
+            
             self.applyFilters()
         }
     }
     
     func applyFilters() {
         var result = products
+        
+        print("현재 선택:", selectedCategory)
+        print("전체 카테고리:", products.map { $0.category })
   
         result = result.filter { $0.category == selectedCategory }
         
@@ -63,6 +67,8 @@ class ProductViewModel: ObservableObject {
             $0.price >= Int(minPrice) && $0.price <= Int(maxPrice)
         }
         filteredProducts = result
+        print("\(self.selectedCategory)")
+        print("\(self.filteredProducts)")
     }
     
 }

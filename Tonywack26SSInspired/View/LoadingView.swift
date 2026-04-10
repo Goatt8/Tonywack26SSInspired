@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-struct HomeView: View {
+struct LoadingView: View {
     var body: some View {
         
     }
 }
 
 #Preview {
-    HomeView()
+    LoadingView()
 }

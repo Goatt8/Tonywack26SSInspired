@@ -98,15 +98,3 @@ struct ProductDetailView: View {
     }
     
 }
-
-#Preview {
-    ProductDetailView(
-        product: Product(
-            id: "1",
-            name: "VELVET ZIPPERED BLOUSON JACKET_ DARK BROWN",
-            price: 89000,
-            category: .outer,
-            imageUrls: ["https://firebasestorage.googleapis.com/v0/b/tonywack26ssinspired.firebasestorage.app/o/outer_1%2Fouter_01_01.jpg?alt=media&token=63981c22-3769-460d-bbf4-24aa901d387a","https://firebasestorage.googleapis.com/v0/b/tonywack26ssinspired.firebasestorage.app/o/outer_1%2Fouter_01_02.jpg?alt=media&token=b38ada73-4384-43c3-ae59-86599d89a79e"]
-        )
-    )
-}

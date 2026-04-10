@@ -17,14 +17,4 @@ enum Category: String, Codable, CaseIterable {
     var title: String {
         rawValue.capitalized
     }
-    
-    var count: Int {
-         switch self {
-         case .outer: return 15
-         case .knit: return 8
-         case .top: return 11
-         case .bottom: return 9
-         case .acc: return 6
-         }
-     }
 }
