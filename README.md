@@ -1,5 +1,7 @@
 # Tonywack26SSInspired
 
+<br>
+
 > Tonywack 26SS 시즌 무드를 기반으로
 이미지 중심의 몰입형 제품 탐색 경험을 제공하는 룩북 스타일 앱입니다.
 
@@ -26,9 +28,7 @@
 
 <br>
 
-1. 로딩뷰 >메인뷰 진입> 디테일뷰까지이동
-2. 메뉴뷰를 통해 카테고리변경
-3. 서치뷰를 통해 레인지 검색
+
 
 ## 📺 Preview
 
@@ -52,9 +52,9 @@
 * Language: Swift
 * UI Framework: SwiftUI
 * Architecture: MVVM
-* Network: URLSession (Streaming)
+* Network: Firebase SDK + URLSession (KingFisher)
 * Backend : Firebase Firestore, Firebase Storage
-* dependency : KingFisher
+* dependency : Firebase, KingFisher
 
 <br>
 
@@ -136,18 +136,20 @@ Tonywack26SSInspired
 <br>
 
 
-## :star: Technical Challenges & 트러블슈팅 Troubleshooting
+## Technical Challenges & 트러블슈팅 Troubleshooting
 
 
-### :ballot_box_with_check: Scroll 기반 Focus UI 구현
-#### ❗ 문제: SwiftUI상에서 scroll.offset 접근방식이 어려워 PreferenceKey와 GeometryReader를 활용해 각 셀의 위치를 수집하고 화면 중앙과 가장 가까운 요소를 계산하는 방식으로 구현
+### :one: Scroll 기반 Focus UI 구현
+#### ❗ 문제
+SwiftUI상에서 scroll.offset 접근방식이 어려워 PreferenceKey와 GeometryReader를 활용해 각 셀의 위치를 수집하고 화면 중앙과 가장 가까운 요소를 계산하는 방식으로 구현
 
-#### ✅ 해결:  GeometryReader + PreferenceKey를 활용하여 현재 화면 중앙에 위치한 아이템을 실시간으로 추적
+#### ✅ 해결
+* GeometryReader + PreferenceKey를 활용하여 현재 화면 중앙에 위치한 아이템을 실시간으로 추적
 
-* ✅ 가장 가까운 아이템을 selectedIndex로 설정하여
+* 가장 가까운 아이템을 selectedIndex로 설정하여
   선택된 상품에만 Focus 효과 적용
 
-* ✅ Blur / Opacity / Scale을 활용한 시각적 강조
+* Blur / Opacity / Scale을 활용한 시각적 강조
 
 ```swift
 
@@ -187,12 +189,21 @@ if let index = closest?.key {
 ---
 
 
-### :ballot_box_with_check: Visible Range 최적화
+### :two: 좌측 Index Visible Range 최적화
 
-#### ❗ 문제 : 이미지 중심의 ScrollView에서 모든 상품 인덱스를 좌측 혹은 하단에 나열할 경우 UI가 복잡해지고 현재 선택된 이미지에 대한 집중도가 떨어지는 문제가 있었습니다.
-#### 또한, 전체 인덱스를 모두 텍스트로 렌더링할 경우 불필요한 렌더링이 발생할 수 있었습니다.
+#### ❗ 문제
+이미지 중심의 ScrollView에서 모든 상품 인덱스를 좌측 혹은 하단에 나열할 경우 UI가 복잡해지고 현재 선택된 이미지에 대한 집중도가 떨어지는 문제가 있었습니다.
 
-#### ✅해결 : 스크롤뷰 좌측에 인덱스 텍스트를 배치하되 선택된 인덱스를 기준으로 일정 범위만 노출하는 Visible Range를 적용하여 UI를 단순화하고 현재 콘텐츠에 집중할 수 있도록 개선했습니다
+또한, 전체 인덱스를 모두 텍스트로 렌더링할 경우 불필요한 렌더링이 발생할 수 있었습니다.
+
+#### ✅해결
+스크롤뷰 좌측에 인덱스 텍스트를 배치하되 선택된 인덱스를 기준으로 일정 범위만 노출하는 Visible Range를 적용하여 UI를 단순화하고 현재 콘텐츠에 집중할 수 있도록 개선했습니다
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b2636bd6-13d9-436f-9e7c-f3712be1c821" width="200">
+</p>
+
+
 
 ```swift
 
@@ -215,32 +226,38 @@ if let index = closest?.key {
 
 
 
-### :ballot_box_with_check: 오버레이 기반 UI 인터랙션
+### :three: 오버레이 기반 UI 인터랙션
 
-#### ❗ 문제 : Side View를 push 방식으로 전환시키기엔 UI의 일관성과 몰입도를 유지하기 어렵다는 점이 있었습니다
+#### ❗ 문제
+Side View를 push 방식으로 화면전환시키기엔 UI의 일관성과 몰입도를 유지하기 어렵다는 점이 있었습니다
 
 
-#### ✅ 해결 :  기존 화면 위에 UI를 덧씌우는 Overlay(ZStack) 구조를 도입하여 메뉴(Menu)와 검색(Search) 패널을 구성해 UI 흐름을 자연스럽게 연결했습니다.
+#### ✅ 해결
+기존 화면 위에 UI를 덧씌우는 Overlay(ZStack) 구조를 도입하여 메뉴(Menu)와 검색(Search) 패널을 구성해 UI 흐름을 자연스럽게 연결했습니다.
 
 * ZStack을 활용해 메인 콘텐츠 위에 사이드뷰를 레이어 형태로 UI 배치
-* dimmed background를 적용해 현재 활성화된 UI에 집중도 향상
+* dimmed background( Black Opacirty background )를 적용해 현재 활성화된 UI에 집중도 향상
 ```swift
 Color.black.opacity(isMenuOpen ? 0.4 : 0)
 ```
 * offset + animation을 활용해 좌/우 슬라이드 방식의 자연스러운 전환 구현
 
-
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/96166c41-8ac4-4f1d-abd7-617ceb249487" width="200">
+</p>
 
 <br>
 
 ---
 
-###  :ballot_box_with_check: MVVM 실시간 상태 동기화
+###  :four: MVVM 실시간 상태 동기화
 
-#### ❗ 문제 : 카테고리, 검색어, 가격 범위 등 여러 필터 조건이 동시에 존재하는 상황에서 각 상태 변경 시마다 필터링 로직을 개별적으로 호출해야 하는 구조는 코드 중복 증가, 상태 간 의존성 관리 어려움, UI와 데이터 간 동기화 불일치 문제를 발생시킬 수 있었습니다.
+#### ❗ 문제 
+카테고리, 검색어, 가격 범위 등 여러 필터 조건이 동시에 존재하는 상황에서 각 상태 변경 시마다 필터링 로직을 개별적으로 호출해야 하는 구조는 코드 중복 증가, 상태 간 의존성 관리 어려움, UI와 데이터 간 동기화 불일치 문제를 발생시킬 수 있었습니다.
 
 
-#### ✅ 해결: 각 필터 상태를 @Published로 선언하고, didSet을 활용하여 상태가 변경될 때마다 공통 필터 함수(applyFilters)가 자동으로 실행되도록 구조를 설계했습니다.
+#### ✅ 해결
+각 필터 상태를 @Published로 선언하고, didSet을 활용하여 상태가 변경될 때마다 공통 필터 함수(applyFilters)가 자동으로 실행되도록 구조를 설계했습니다.
 
 ```swift
 @Published var selectedCategory: Category = .outer {
@@ -284,13 +301,29 @@ func applyFilters() {
 ---
 
 
-###  :ballot_box_with_check: LoadView 비동기 처리
+###  :five: LoadView 비동기 처리 기반 화면 전환
 
-❗ 문제
+#### ❗ 문제
+초기 로딩 화면을 일정 시간 기준으로 전환할 경우, 실제 데이터 로딩 상태와 무관하게 화면이 전환되어 
+* 데이터가 아직 준비되지 않은 상태에서 MainView가 노출되거나 
+* 반대로 불필요하게 로딩 화면이 길게 유지
+되는 문제가 발생할 수 있었습니다.
+
+#### ✅ 해결
+RootView에서 비동기 데이터 로딩을 직접 관리하고, 데이터 로딩이 완료된 시점을 기준으로 화면 전환이 이루어지도록 구현했습니다.
 
 
-###  :ballot_box_with_check: 상세 페이지 진입 시 이미지 로딩 과정에서 순간적인 끊김이 발생했습니다.
-
+```swift
+//RootView
+private func loadData() {
+    Task {
+        await viewModel.fetchProductsData()
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        
+        isLoading = false
+    }
+}
+```
 
 
 
