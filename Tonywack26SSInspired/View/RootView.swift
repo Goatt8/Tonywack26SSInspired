@@ -15,13 +15,13 @@ struct RootView: View {
         ZStack {
             if isLoading {
                 LoadingView()
-                    .transition(.opacity)
+                    .opacity(isLoading ? 1 : 0)
             } else {
                 ProductView(viewModel: viewModel)
-                    .transition(.opacity)
+                    .opacity(isLoading ? 0 : 1)
             }
         }
-        .animation(.easeInOut(duration: 0.4), value: isLoading)
+        .animation(.easeInOut(duration: 0.6), value: isLoading)
         .onAppear {
             loadData()
         }
