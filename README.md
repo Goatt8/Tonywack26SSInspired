@@ -1,4 +1,4 @@
-# Tonywack26SSInspired - SwiftUI Lookbook App
+# Tonywack26SSInspired
 
 <br>
 
